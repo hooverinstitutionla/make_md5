@@ -68,7 +68,7 @@ def main():
         for f in not_verified:
             print f
     else:
-        print "Hooray! All files verified!\n"
+        print "\nHooray! All files verified!\n"
 
 
 if __name__ == '__main__':
