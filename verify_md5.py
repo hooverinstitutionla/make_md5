@@ -53,12 +53,22 @@ def main():
     this_dir = os.listdir('.')
     md5_list = make_file_list(this_dir, '.md5')
     verified, not_verified = cycle_files(md5_list)
-    print "The following verified: \n"
-    for f in verified:
-        print f
-    print "\nThe following failed to verify: \n"
-    for f in not_verified:
-        print f
+
+    if len(verified) > 0:
+        print "The following verified: \n"
+        for f in verified:
+            print f
+    else:
+        print "\n* * * * * * * * * * * *\n"
+        print "  NO FILES VERIFIED!!!\n"
+        print "* * * * * * * * * * * *\n"
+
+    if len(not_verified) > 0:
+        print "\nThe following failed to verify: \n"
+        for f in not_verified:
+            print f
+    else:
+        print "Hooray! All files verified!\n"
 
 
 if __name__ == '__main__':
