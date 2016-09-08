@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 #
+# Python 3.4
+#
 # make_md5.py
-# Author: Jim Sam
 # This script generates an indexed md5 checksum for every file in the directory.
 # It does not verify checksums.
-#
-# To use this:
-# 1. add this file to the home directory. (House icon in Finder)
-# 2. Open Terminal (Applications > Utilities > Terminal)
-# 3. navigate to the folder you want to process
-# 4. type "python ~/make_md5.py"
-# 5. hit enter.
 #
 
 import os
 import hashlib
 
-# This function, md5_for_file was copied from StackOverflow. Please see:
-# http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
+# This function, md5_for_file was copied from StackOverflow, used under the
+# Creative Commons license outlined at http://blog.stackoverflow.com/2009/06/attribution-required/
+#
+# SO User Yuval Adam. http://stackoverflow.com/users/24545/yuval-adam
+# Code: http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
+#
 def md5_for_file(f, block_size=2**20):
     m = hashlib.md5()
     with open(f, "rb" ) as f:
