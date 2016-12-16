@@ -31,7 +31,7 @@ def get_hash(m):
         for line in f:
             if ' *' in line:
                 a = line.split(' *')
-                hashcode = a[0]
+                hashcode = a[0].rstrip().lower()
     return hashcode
 
 def cycle_files(md5_list):
