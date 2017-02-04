@@ -5,8 +5,9 @@
 # It does not generate checksums. Please see make_md5.py for creation.
 #
 
-import os
 import hashlib
+import os
+import sys
 
 # This function, md5_for_file was copied from StackOverflow, used under the
 # Creative Commons license outlined at http://blog.stackoverflow.com/2009/06/attribution-required/
@@ -38,6 +39,8 @@ def cycle_files(md5_list):
     for m in md5_list:
         verified = False
         filename = m[:-4]
+        if filename == '.DS_Store':
+            continue
         generated_hashcode = md5_for_file(filename)
         derived_hashcode = get_hash(m)
         if generated_hashcode == derived_hashcode:
@@ -58,6 +61,12 @@ def make_file_list(dir1, ext):
 def main():
     this_dir = os.listdir('.')
     md5_list = make_file_list(this_dir, '.md5')
+    if len(md5_list) == 0:
+        print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
+        print("  The folder does not have any checksums in it.\n")
+        print("* * * * * * * * * * * * * * * * * * * * * * * *\n")
+        sys.exit()
+
     verified, not_verified = cycle_files(md5_list)
 
     if len(verified) > 0:
@@ -74,7 +83,7 @@ def main():
         for f in not_verified:
             print(f)
     else:
-        print("\nHooray! All files verified!\n")
+        print("\nHooray! All MD5 files verified!\n")
 
 
 if __name__ == '__main__':

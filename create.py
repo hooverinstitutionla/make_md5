@@ -26,6 +26,8 @@ def md5_for_file(f, block_size=2**20):
 
 def cycle_files(this_dir):
     for i in this_dir:
+        if i == '.DS_Store':
+            continue
         new = i+'.md5'
         if os.path.isfile(new):
             continue
