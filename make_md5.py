@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 #
-# Python 2.7
-#
 # make_md5.py
 # This script generates an indexed md5 checksum for every file in the directory.
 # It does not verify checksums. Please see verify_md5.py for verification.

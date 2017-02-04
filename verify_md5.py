@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 #
-# Python 2.7
-#
 # verify_md5.py
 # This script verifies an indexed md5 checksum for every checksum in the directory.
-# It does not generate checksums. Please see make_md5.py for verification.
+# It does not generate checksums. Please see make_md5.py for creation.
 #
 
 import os
