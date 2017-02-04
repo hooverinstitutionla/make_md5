@@ -63,20 +63,20 @@ def main():
     verified, not_verified = cycle_files(md5_list)
 
     if len(verified) > 0:
-        print "The following verified: \n"
+        print("The following verified: \n")
         for f in verified:
-            print f
+            print(f)
     else:
-        print "\n* * * * * * * * * * * *\n"
-        print "  NO FILES VERIFIED!!!\n"
-        print "* * * * * * * * * * * *\n"
+        print("\n* * * * * * * * * * * *\n")
+        print("  NO FILES VERIFIED!!!\n")
+        print("* * * * * * * * * * * *\n")
 
     if len(not_verified) > 0:
-        print "\nThe following failed to verify: \n"
+        print("\nThe following failed to verify: \n")
         for f in not_verified:
-            print f
+            print(f)
     else:
-        print "\nHooray! All files verified!\n"
+        print("\nHooray! All files verified!\n")
 
 
 if __name__ == '__main__':
