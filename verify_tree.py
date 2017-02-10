@@ -1,21 +1,22 @@
-#!/usr/bin/env python
-#
-# verify_tree.py
-# This script verifies an indexed md5 checksum for every checksum in the directory.
-# It does not generate checksums. Please see create_tree.py for creation.
-#
+'''verify_tree.py verifies all md5 checksums in a folder and subfolders.
+
+This script verifies an indexed md5 checksum for every checksum in the directory.
+It does not generate checksums. Please see create_tree.py for creation.
+'''
 
 import hashlib
 import os
 import sys
 
 def md5_for_file(f, block_size=2**20):
-    '''
-    This function, md5_for_file was copied from StackOverflow, used under the
-    Creative Commons license outlined at http://blog.stackoverflow.com/2009/06/attribution-required/
+    '''This function, md5_for_file was copied from StackOverflow, used under the
+    Creative Commons license outlined at:
+    http://blog.stackoverflow.com/2009/06/attribution-required/
 
-    SO User Yuval Adam. http://stackoverflow.com/users/24545/yuval-adam
-    Code: http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
+    StackOverflow User Yuval Adam.
+    http://stackoverflow.com/users/24545/yuval-adam
+    Code:
+    http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
     '''
     m = hashlib.md5()
     with open(f, "rb" ) as f:
