@@ -40,6 +40,7 @@ def cycle_files(md5_list):
     not_verified = []
     missing = []
     for m in md5_list:
+        print("Working on %s now." % m)
         verified = False
         filename = m[:-4]
         if filename == '.DS_Store':
