@@ -5,6 +5,7 @@ It does not generate checksums. Please see create.py for creation.  Please
 see create_tree.py and verify_tree.py for recursive creation and verification.
 '''
 
+import datetime
 import hashlib
 import os
 import sys
@@ -39,20 +40,25 @@ def get_hash(m):
 def cycle_files(md5_list):
     did_verified = []
     not_verified = []
+    missing = []
     for m in md5_list:
         print("Working on %s now." % m)
         verified = False
         filename = m[:-4]
         if filename == '.DS_Store':
             continue
-        generated_hashcode = md5_for_file(filename)
-        derived_hashcode = get_hash(m)
-        if generated_hashcode == derived_hashcode:
-            verified = True
-            did_verified = did_verified + [filename]
-        if not verified:
-            not_verified = not_verified + [filename]
-    return did_verified, not_verified
+        try:
+            generated_hashcode = md5_for_file(filename)
+            derived_hashcode = get_hash(m)
+            if generated_hashcode == derived_hashcode:
+                verified = True
+                did_verified = did_verified + [filename]
+            if not verified:
+                not_verified = not_verified + [filename]
+        except:
+            missing.append(filename)
+
+    return did_verified, not_verified, missing
 
 def make_file_list(dir1, ext):
     file_list = []
@@ -71,24 +77,43 @@ def main():
         print("* * * * * * * * * * * * * * * * * * * * * * * *\n")
         sys.exit()
 
-    verified, not_verified = cycle_files(md5_list)
+    print("Compiling files to verify now.\n")
+    verified, not_verified, missing = cycle_files(md5_list)
 
-    if len(verified) > 0:
-        print("The following verified: \n")
-        for f in verified:
-            print(f)
-    else:
-        print("\n* * * * * * * * * * * *\n")
-        print("  NO FILES VERIFIED!!!\n")
-        print("* * * * * * * * * * * *\n")
+    with open('%s_verification_results.txt' % datetime.date.today(), 'w') as results:
+        if len(verified) > 0:
+            print("The following verified: \n")
+            results.write("The following verified: \n")
+            for f in verified:
+                print(f)
+                results.write(f+"\n")
+            results.write("\n")
+        else:
+            print("\n* * * * * * * * * * * *\n")
+            print("  NO FILES VERIFIED!!!\n")
+            print("* * * * * * * * * * * *\n")
+            results.write("\n* * * * * * * * * * * *\n")
+            results.write("  NO FILES VERIFIED!!!\n")
+            results.write("* * * * * * * * * * * *\n")
 
-    if len(not_verified) > 0:
-        print("\nThe following failed to verify: \n")
-        for f in not_verified:
-            print(f)
-    else:
-        print("\nHooray! All MD5 files verified!\n")
-
+        if len(not_verified) > 0 or len(missing) > 0:
+            if len(not_verified) > 0:
+                print("\nThe following failed to verify: \n")
+                results.write("\nThe following failed to verify: \n")
+                for f in not_verified:
+                    print(f)
+                    results.write(f+'\n')
+                results.write("\n")
+            if len(missing) > 0:
+                print("\nThe following files are missing: \n")
+                results.write("\nThe following files are missing: \n")
+                for f in missing:
+                    print(f)
+                    results.write(f+'\n')
+                results.write("\n")
+        else:
+            print("\nHooray! All MD5 files verified!\n")
+            results.write("\nHooray! All MD5 files verified!\n\n")
 
 if __name__ == '__main__':
     main()
