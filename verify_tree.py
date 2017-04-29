@@ -51,9 +51,9 @@ def cycle_files(md5_list):
             derived_hashcode = get_hash(m)
             if generated_hashcode == derived_hashcode:
                 verified = True
-                did_verified = did_verified + [filename]
+                did_verified.append(filename)
             if not verified:
-                not_verified = not_verified + [filename]
+                not_verified.append(filename)
         except:
             missing.append(filename)
 
