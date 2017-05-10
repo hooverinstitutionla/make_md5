@@ -18,7 +18,7 @@ def md5_for_file(f, block_size=2**20):
     http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
     '''
     m = hashlib.md5()
-    with open(f, "rb" ) as f:
+    with open(f, "rb") as f:
         while True:
             buf = f.read(block_size)
             if not buf:
@@ -45,7 +45,8 @@ def main():
                     print("Making MD5 for a file with special characters in its name now.")
                     print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
                     print("  DOES THIS FILE WITH SPECIAL CHARACTERS IN\n")
-                    print("  ITS NAME NEED TO BE RENAMED?\n")
+                    print("  ITS NAME NEED TO BE RENAMED?")
+                    print("  %s\n" % i.encode())
                     print("* * * * * * * * * * * * * * * * * * * * * * * *\n")
                 m = md5_for_file(full_file)
                 with open(new, 'w', encoding='utf8') as n:

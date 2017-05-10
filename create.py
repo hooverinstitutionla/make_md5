@@ -43,7 +43,8 @@ def cycle_files(this_dir):
                 print("Making MD5 for a file with special characters in its name now.")
                 print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
                 print("  DOES THIS FILE WITH SPECIAL CHARACTERS IN\n")
-                print("  ITS NAME NEED TO BE RENAMED?\n")
+                print("  ITS NAME NEED TO BE RENAMED?")
+                print("  %s\n" % i.encode())
                 print("* * * * * * * * * * * * * * * * * * * * * * * *\n")
             m = md5_for_file(i)
             with open(new, 'w', encoding='utf8') as n:
