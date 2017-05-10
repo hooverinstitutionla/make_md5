@@ -4,6 +4,7 @@ This script verifies an indexed md5 checksum for every checksum in the directory
 It does not generate checksums. Please see create_tree.py for creation.
 '''
 
+
 import datetime
 import hashlib
 import os
@@ -29,7 +30,7 @@ def md5_for_file(f, block_size=2**20):
     return m.hexdigest()
 
 def get_hash(m):
-    with open(m, 'r') as f:
+    with open(m, 'r', encoding='utf8') as f:
         for line in f:
             if ' *' in line:
                 a = line.split(' *')
@@ -41,7 +42,10 @@ def cycle_files(md5_list):
     not_verified = []
     missing = []
     for m in md5_list:
-        print("Working on %s now." % m)
+        try:
+            print("Verifying %s now." % m)
+        except UnicodeEncodeError:
+            print("Verifying a file with special characters in its name now.")
         verified = False
         filename = m[:-4]
         if filename == '.DS_Store':
@@ -59,14 +63,17 @@ def cycle_files(md5_list):
 
     return did_verified, not_verified, missing
 
-def main():
-    md5_list = []
-    folder = os.getcwd()
+def make_file_list(folder):
+    file_list = []
     for root, dirs, files in os.walk(folder):
         for f in files:
             if not f[-3:] == 'md5':
                 continue
-            md5_list.append(os.path.join(root, f))
+            file_list.append(os.path.join(root, f))
+    return file_list
+
+def main():
+    md5_list = make_file_list(os.getcwd())
     if len(md5_list) == 0:
         print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
         print("  The folder does not have any checksums in it.\n")
@@ -76,12 +83,17 @@ def main():
     print("Compiling files to verify now.\n")
     verified, not_verified, missing = cycle_files(md5_list)
 
-    with open('%s_verification_results.txt' % datetime.date.today(), 'w') as results:
+    with open('%s_verification_results.txt' % datetime.date.today(), 'w', encoding='utf8') as results:
         if len(verified) > 0:
-            print("The following verified: \n")
+            print("\n\nThe following verified: \n")
             results.write("The following verified: \n")
             for f in verified:
-                print(f)
+                try:
+                    print(f)
+                except UnicodeEncodeError:
+                    f = f.encode()
+                    print(f)
+                    f = f.decode('utf-8')
                 results.write(f+"\n")
             results.write("\n")
         else:
@@ -97,14 +109,24 @@ def main():
                 print("\nThe following failed to verify: \n")
                 results.write("\nThe following failed to verify: \n")
                 for f in not_verified:
-                    print(f)
+                    try:
+                        print(f)
+                    except UnicodeEncodeError:
+                        f = f.encode()
+                        print(f)
+                        f = f.decode('utf-8')
                     results.write(f+'\n')
                 results.write("\n")
             if len(missing) > 0:
                 print("\nThe following files are missing: \n")
                 results.write("\nThe following files are missing: \n")
                 for f in missing:
-                    print(f)
+                    try:
+                        print(f)
+                    except UnicodeEncodeError:
+                        f = f.encode()
+                        print(f)
+                        f = f.decode('utf-8')
                     results.write(f+'\n')
                 results.write("\n")
         else:
