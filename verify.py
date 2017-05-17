@@ -10,6 +10,58 @@ import hashlib
 import os
 import sys
 
+py_version = sys.version_info.major
+
+def write_results(verified, not_verified, missing, results):
+    if len(verified) > 0:
+        print("\n\nThe following verified: \n")
+        results.write("The following verified: \n")
+        for f in verified:
+            try:
+                print(f)
+            except UnicodeEncodeError:
+                f = f.encode()
+                print(f)
+                f = f.decode('utf-8')
+            results.write(f+"\n")
+        results.write("\n")
+    else:
+        print("\n* * * * * * * * * * * *\n")
+        print("  NO FILES VERIFIED!!!\n")
+        print("* * * * * * * * * * * *\n")
+        results.write("\n* * * * * * * * * * * *\n")
+        results.write("  NO FILES VERIFIED!!!\n")
+        results.write("* * * * * * * * * * * *\n")
+
+    if len(not_verified) > 0 or len(missing) > 0:
+        if len(not_verified) > 0:
+            print("\nThe following failed to verify: \n")
+            results.write("\nThe following failed to verify: \n")
+            for f in not_verified:
+                try:
+                    print(f)
+                except UnicodeEncodeError:
+                    f = f.encode()
+                    print(f)
+                    f = f.decode('utf-8')
+                results.write(f+'\n')
+            results.write("\n")
+        if len(missing) > 0:
+            print("\nThe following files are missing: \n")
+            results.write("\nThe following files are missing: \n")
+            for f in missing:
+                try:
+                    print(f)
+                except UnicodeEncodeError:
+                    f = f.encode()
+                    print(f)
+                    f = f.decode('utf-8')
+                results.write(f+'\n')
+            results.write("\n")
+    else:
+        print("\nHooray! All MD5 files verified!\n")
+        results.write("\nHooray! All MD5 files verified!\n\n")
+
 def md5_for_file(f, block_size=2**20):
     '''This function, md5_for_file was copied from StackOverflow, used under the
     Creative Commons license outlined at:
@@ -30,11 +82,18 @@ def md5_for_file(f, block_size=2**20):
     return m.hexdigest()
 
 def get_hash(m):
-    with open(m, 'r', encoding='utf8') as f:
-        for line in f:
-            if ' *' in line:
-                a = line.split(' *')
-                hashcode = a[0].rstrip().lower()
+    if py_version == 2:
+        with open(m, 'r') as f:
+            for line in f:
+                if ' *' in line:
+                    a = line.split(' *')
+                    hashcode = a[0].rstrip().lower()
+    else:
+        with open(m, 'r', encoding='utf8') as f:
+            for line in f:
+                if ' *' in line:
+                    a = line.split(' *')
+                    hashcode = a[0].rstrip().lower()
     return hashcode
 
 def cycle_files(md5_list):
@@ -83,55 +142,12 @@ def main():
     print("Compiling files to verify now.\n")
     verified, not_verified, missing = cycle_files(md5_list)
 
-    with open('%s_verification_results.txt' % datetime.date.today(), 'w', encoding='utf8') as results:
-        if len(verified) > 0:
-            print("\n\nThe following verified: \n")
-            results.write("The following verified: \n")
-            for f in verified:
-                try:
-                    print(f)
-                except UnicodeEncodeError:
-                    f = f.encode()
-                    print(f)
-                    f = f.decode('utf-8')
-                results.write(f+"\n")
-            results.write("\n")
-        else:
-            print("\n* * * * * * * * * * * *\n")
-            print("  NO FILES VERIFIED!!!\n")
-            print("* * * * * * * * * * * *\n")
-            results.write("\n* * * * * * * * * * * *\n")
-            results.write("  NO FILES VERIFIED!!!\n")
-            results.write("* * * * * * * * * * * *\n")
-
-        if len(not_verified) > 0 or len(missing) > 0:
-            if len(not_verified) > 0:
-                print("\nThe following failed to verify: \n")
-                results.write("\nThe following failed to verify: \n")
-                for f in not_verified:
-                    try:
-                        print(f)
-                    except UnicodeEncodeError:
-                        f = f.encode()
-                        print(f)
-                        f = f.decode('utf-8')
-                    results.write(f+'\n')
-                results.write("\n")
-            if len(missing) > 0:
-                print("\nThe following files are missing: \n")
-                results.write("\nThe following files are missing: \n")
-                for f in missing:
-                    try:
-                        print(f)
-                    except UnicodeEncodeError:
-                        f = f.encode()
-                        print(f)
-                        f = f.decode('utf-8')
-                    results.write(f+'\n')
-                results.write("\n")
-        else:
-            print("\nHooray! All MD5 files verified!\n")
-            results.write("\nHooray! All MD5 files verified!\n\n")
+    if py_version == 2:
+        with open('%s_verification_results.txt' % datetime.date.today(), 'w') as results:
+            write_results(verified, not_verified, missing, results)
+    else:
+        with open('%s_verification_results.txt' % datetime.date.today(), 'w', encoding='utf8') as results:
+            write_results(verified, not_verified, missing, results)
 
 if __name__ == '__main__':
     main()
