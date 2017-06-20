@@ -43,19 +43,19 @@ def main():
                 continue
             else:
                 try:
-                    print("Making MD5 for %s now." % full_file)
+                    print("Making MD5 for {} now.".format(full_file))
                 except UnicodeEncodeError:
                     print("Making MD5 for a file with special characters in its name now.")
                     print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
                     print("  DOES THIS FILE WITH SPECIAL CHARACTERS IN")
                     print("  ITS NAME NEED TO BE RENAMED?")
-                    print("  %s\n" % full_file.encode())
+                    print("  {}\n".format(full_file.encode()))
                     print("* * * * * * * * * * * * * * * * * * * * * * * *\n")
                 try:
                     m = md5_for_file(full_file)
                 except IOError:
                     print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
-                    print("An MD5 checksum cannot be generated for %s with this version of Python." % full_file.encode())
+                    print("An MD5 checksum cannot be generated for {} with this version of Python.".format(full_file.encode()))
                     print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
                     continue
                 if py_version == 2:

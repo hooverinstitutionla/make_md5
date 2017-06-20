@@ -102,7 +102,7 @@ def cycle_files(md5_list):
     missing = []
     for m in md5_list:
         try:
-            print("Verifying %s now." % m)
+            print("Verifying {} now.".format(m))
         except UnicodeEncodeError:
             print("Verifying a file with special characters in its name now.")
         verified = False
@@ -143,10 +143,10 @@ def main():
     verified, not_verified, missing = cycle_files(md5_list)
 
     if py_version == 2:
-        with open('%s_verification_results.txt' % datetime.date.today(), 'w') as results:
+        with open('{}_verification_results.txt'.format(datetime.date.today()), 'w') as results:
             write_results(verified, not_verified, missing, results)
     else:
-        with open('%s_verification_results.txt' % datetime.date.today(), 'w', encoding='utf8') as results:
+        with open('{}_verification_results.txt'.format(datetime.date.today()), 'w', encoding='utf8') as results:
             write_results(verified, not_verified, missing, results)
 
 if __name__ == '__main__':
