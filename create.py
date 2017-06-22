@@ -41,19 +41,19 @@ def cycle_files(this_dir):
             continue
         else:
             try:
-                print("Making MD5 for %s now." % i)
+                print("Making MD5 for {} now.".format(i))
             except UnicodeEncodeError:
                 print("Making MD5 for a file with special characters in its name now.")
                 print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
                 print("  DOES THIS FILE WITH SPECIAL CHARACTERS IN\n")
                 print("  ITS NAME NEED TO BE RENAMED?")
-                print("  %s\n" % i.encode())
+                print("  {}\n".format(i.encode()))
                 print("* * * * * * * * * * * * * * * * * * * * * * * *\n")
             try:
                 m = md5_for_file(i)
             except IOError:
                 print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
-                print("An MD5 checksum cannot be generated for %s with this version of Python." % i.encode())
+                print("An MD5 checksum cannot be generated for {} with this version of Python.".format(i.encode()))
                 print("\n* * * * * * * * * * * * * * * * * * * * * * * *\n")
                 continue
             if py_version == 2:

@@ -42,6 +42,6 @@ hash_for_f = get_hash(md5)
 temp_hash = md5_for_file(f)
 
 if hash_for_f == temp_hash:
-    print('Hooray, %s validates!' % f)
+    print('Hooray, {} validates!'.format(f))
 else:
-    print('%s does not validate.' % f)
+    print('{} does not validate.'.format(f))
