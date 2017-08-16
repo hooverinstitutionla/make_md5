@@ -58,19 +58,16 @@ def write_md5_file(f, new):
             n.write('; You may find a copy at https://github.com/hooverinstitutionla/md5_utilities\r\n')
             n.write(m+' *'+f)
 
-def cycle_files(this_dir):
-    for f in this_dir:
-        new = f+'.md5'
-        if f == '.DS_Store': continue
-        if os.path.isfile(new): continue
-        elif '.md5.' in new: continue
-        else:
-            write_md5_file(f, new)
-
 def main():
     folder = os.getcwd()
     for root, dirs, files in os.walk(folder):
-        cycle_files(files)
+        for f in files:
+            new = os.path.join(root, f+'.md5')
+            if f == '.DS_Store': continue
+            if os.path.isfile(new): continue
+            elif '.md5.' in new: continue
+            else:
+                write_md5_file(os.path.join(root, f), new)
 
     print("\nDone!\n")
 
