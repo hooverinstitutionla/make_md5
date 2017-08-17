@@ -5,6 +5,7 @@ It does not verify checksums. Please see verify_tree.py for verification.
 '''
 
 import hashlib
+import multiprocessing
 import os
 import sys
 
@@ -28,6 +29,14 @@ def md5_for_file(f, block_size=2**20):
                 break
             m.update(buf)
     return m.hexdigest()
+
+def prep_for_writing(root, f):
+    new = os.path.join(root, f+'.md5')
+    if f == '.DS_Store': return None
+    if os.path.isfile(new): return None
+    elif '.md5.' in new: return None
+    else:
+        write_md5_file(os.path.join(root, f), new)
 
 def write_md5_file(f, new):
     try:
@@ -60,14 +69,10 @@ def write_md5_file(f, new):
 
 def main():
     folder = os.getcwd()
+    cores_count = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(processes=cores_count)
     for root, dirs, files in os.walk(folder):
-        for f in files:
-            new = os.path.join(root, f+'.md5')
-            if f == '.DS_Store': continue
-            if os.path.isfile(new): continue
-            elif '.md5.' in new: continue
-            else:
-                write_md5_file(os.path.join(root, f), new)
+        [pool.apply_async(prep_for_writing(root, f)) for f in files]
 
     print("\nDone!\n")
 
