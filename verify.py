@@ -12,90 +12,6 @@ import sys
 
 py_version = sys.version_info.major
 
-def write_results(verified, not_verified, missing, results):
-    if len(verified) > 0:
-        print("\n\nThe following verified: \n")
-        results.write("The following verified: \n")
-        for f in verified:
-            try:
-                print(f)
-            except UnicodeEncodeError:
-                f = f.encode()
-                print(f)
-                f = f.decode('utf-8')
-            results.write(f+"\n")
-        results.write("\n")
-    else:
-        print("\n* * * * * * * * * * * *\n")
-        print("  NO FILES VERIFIED!!!\n")
-        print("* * * * * * * * * * * *\n")
-        results.write("\n* * * * * * * * * * * *\n")
-        results.write("  NO FILES VERIFIED!!!\n")
-        results.write("* * * * * * * * * * * *\n")
-
-    if len(not_verified) > 0 or len(missing) > 0:
-        if len(not_verified) > 0:
-            print("\nThe following failed to verify: \n")
-            results.write("\nThe following failed to verify: \n")
-            for f in not_verified:
-                try:
-                    print(f)
-                except UnicodeEncodeError:
-                    f = f.encode()
-                    print(f)
-                    f = f.decode('utf-8')
-                results.write(f+'\n')
-            results.write("\n")
-        if len(missing) > 0:
-            print("\nThe following files are missing: \n")
-            results.write("\nThe following files are missing: \n")
-            for f in missing:
-                try:
-                    print(f)
-                except UnicodeEncodeError:
-                    f = f.encode()
-                    print(f)
-                    f = f.decode('utf-8')
-                results.write(f+'\n')
-            results.write("\n")
-    else:
-        print("\nHooray! All MD5 files verified!\n")
-        results.write("\nHooray! All MD5 files verified!\n\n")
-
-def md5_for_file(f, block_size=2**20):
-    '''This function, md5_for_file was copied from StackOverflow, used under the
-    Creative Commons license outlined at:
-    http://blog.stackoverflow.com/2009/06/attribution-required/
-
-    StackOverflow User Yuval Adam.
-    http://stackoverflow.com/users/24545/yuval-adam
-    Code:
-    http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
-    '''
-    m = hashlib.md5()
-    with open(f, "rb") as f:
-        while True:
-            buf = f.read(block_size)
-            if not buf:
-                break
-            m.update( buf )
-    return m.hexdigest()
-
-def get_hash(m):
-    if py_version == 2:
-        with open(m, 'r') as f:
-            for line in f:
-                if ' *' in line:
-                    a = line.split(' *')
-                    hashcode = a[0].rstrip().lower()
-    else:
-        with open(m, 'r', encoding='utf8') as f:
-            for line in f:
-                if ' *' in line:
-                    a = line.split(' *')
-                    hashcode = a[0].rstrip().lower()
-    return hashcode
-
 def cycle_files(md5_list):
     did_verified = []
     not_verified = []
@@ -122,6 +38,21 @@ def cycle_files(md5_list):
 
     return did_verified, not_verified, missing
 
+def get_hash(m):
+    if py_version == 2:
+        with open(m, 'r') as f:
+            for line in f:
+                if ' *' in line:
+                    a = line.split(' *')
+                    hashcode = a[0].rstrip().lower()
+    else:
+        with open(m, 'r', encoding='utf8') as f:
+            for line in f:
+                if ' *' in line:
+                    a = line.split(' *')
+                    hashcode = a[0].rstrip().lower()
+    return hashcode
+
 def make_file_list(dir1, ext):
     file_list = []
     for f in dir1:
@@ -130,6 +61,86 @@ def make_file_list(dir1, ext):
             file_list.append(file_name)
     return file_list
 
+def md5_for_file(f, block_size=2**20):
+    '''This function, md5_for_file was copied from StackOverflow, used under the
+    Creative Commons license outlined at:
+    http://blog.stackoverflow.com/2009/06/attribution-required/
+
+    StackOverflow User Yuval Adam.
+    http://stackoverflow.com/users/24545/yuval-adam
+    Code:
+    http://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python#1131238
+    '''
+    m = hashlib.md5()
+    with open(f, "rb") as f:
+        while True:
+            buf = f.read(block_size)
+            if not buf:
+                break
+            m.update( buf )
+    return m.hexdigest()
+
+def write_results_to_file(verified, not_verified, missing, results):
+    if len(verified) > 0:
+        results.write("The following verified: \n")
+        for f in verified:
+            results.write(f+"\n")
+        results.write("\n")
+    else:
+        results.write("\n* * * * * * * * * * * *\n")
+        results.write("  NO FILES VERIFIED!!!\n")
+        results.write("* * * * * * * * * * * *\n")
+
+    if len(not_verified) > 0 or len(missing) > 0:
+        if len(not_verified) > 0:
+            results.write("\nThe following failed to verify: \n")
+            for f in not_verified:
+                results.write(f+'\n')
+            results.write("\n")
+        if len(missing) > 0:
+            results.write("\nThe following files are missing: \n")
+            for f in missing:
+                results.write(f+'\n')
+            results.write("\n")
+    else:
+        results.write("\nHooray! All MD5 files verified!\n\n")
+
+def write_results_to_shell(verified, not_verified, missing):
+    if len(verified) > 0:
+        print("\n\nThe following verified: \n")
+        for f in verified:
+            try:
+                print(f)
+            except UnicodeEncodeError:
+                f = f.encode()
+                print(f)
+                f = f.decode('utf-8')
+    else:
+        print("\n* * * * * * * * * * * *\n")
+        print("  NO FILES VERIFIED!!!\n")
+        print("* * * * * * * * * * * *\n")
+
+    if len(not_verified) > 0 or len(missing) > 0:
+        if len(not_verified) > 0:
+            print("\nThe following failed to verify: \n")
+            for f in not_verified:
+                try:
+                    print(f)
+                except UnicodeEncodeError:
+                    f = f.encode()
+                    print(f)
+                    f = f.decode('utf-8')
+        if len(missing) > 0:
+            print("\nThe following files are missing: \n")
+            for f in missing:
+                try:
+                    print(f)
+                except UnicodeEncodeError:
+                    f = f.encode()
+                    print(f)
+                    f = f.decode('utf-8')
+    else:
+        print("\nHooray! All MD5 files verified!\n")
 
 def main():
     md5_list = make_file_list(os.listdir('.'), '.md5')
@@ -142,12 +153,39 @@ def main():
     print("Compiling files to verify now.\n")
     verified, not_verified, missing = cycle_files(md5_list)
 
+    write_results_to_shell(verified, not_verified, missing)
+
+    # Prompt user to write a verification report
     if py_version == 2:
-        with open('{}_verification_results.txt'.format(datetime.date.today()), 'w') as results:
-            write_results(verified, not_verified, missing, results)
+        verification_report = False
+        toggle = False
+        while not toggle:
+            _write = raw_input('\r\nDo you want a verification report placed in the directory? (y/n) ')
+            if _write == 'n':
+                toggle = True
+            elif _write == 'y':
+                toggle = True
+                verification_report = True
+            else:
+                pass
+        if verification_report:
+            with open('{}_verification_results.txt'.format(datetime.date.today()), 'w') as results:
+                write_results_to_file(verified, not_verified, missing, results)
     else:
-        with open('{}_verification_results.txt'.format(datetime.date.today()), 'w', encoding='utf8') as results:
-            write_results(verified, not_verified, missing, results)
+        verification_report = False
+        toggle = False
+        while not toggle:
+            _write = raw_input('\r\nDo you want a verification report placed in the directory? (y/n) ')
+            if _write == 'n':
+                toggle = True
+            elif _write == 'y':
+                toggle = True
+                verification_report = True
+            else:
+                pass
+        if verification_report:
+            with open('{}_verification_results.txt'.format(datetime.date.today()), 'w', encoding='utf8') as results:
+                write_results_to_file(verified, not_verified, missing, results)
 
 if __name__ == '__main__':
     main()
