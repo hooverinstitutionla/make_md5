@@ -175,7 +175,7 @@ def main():
         verification_report = False
         toggle = False
         while not toggle:
-            _write = raw_input('\r\nDo you want a verification report placed in the directory? (y/n) ')
+            _write = input('\r\nDo you want a verification report placed in the directory? (y/n) ')
             if _write == 'n':
                 toggle = True
             elif _write == 'y':
