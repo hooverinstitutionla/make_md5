@@ -2,11 +2,11 @@
 
 create.py, create_tree.py, verify.py, verify_tree.py, and verify_single.py are complimentary scripts that help ensure fixity for the Hoover Institution Library and Archives.
 
-The purpose of these scripts is to generate and verify an *indexed* sidecar MD5 checksum/hash file for each file in a targeted folder. If .md5 files already exist for a given file, neither create.py nor create_tree.py does not overwrite them.
+The purpose of these scripts is to generate and verify an *indexed* sidecar MD5 checksum/hash file for each file in a targeted folder. If .md5 files already exist for a given file, neither create.py nor create_tree.py will not overwrite them.
 
 create.py and verify.py, respectively, create and verify checksums in a single folder.
 
-create_tree.py and verify_tree.py are complimentary scripts that process a folder and all its subfolders.
+create_tree.py and verify_tree.py, respectively as above, process a folder and all its subfolders.
 
 verify_single.py validates a single md5 file.
 
@@ -20,4 +20,4 @@ verify_single.py validates a single md5 file.
 
 3. Call the script with full path to the script: `python c:\scripts\create.py`
 
-For verify_single, this will look like `python c:\scripts\verify_single.py c:\path\to\fake_file.txt.md5` will verify fake_file.txt.
+⋅⋅⋅For verify_single, this will look like `python c:\scripts\verify_single.py c:\path\to\fake_file.txt.md5` will verify fake_file.txt.
