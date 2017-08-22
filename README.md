@@ -18,6 +18,4 @@ verify_single.py validates a single md5 file.
 
 2. Navigate to the folder (or top-level folder) you want to process. [Windows](https://www.youtube.com/watch?v=bmGy8Q9eZV8) [Mac](https://www.youtube.com/watch?v=mgazHxDtiu8) (substitute folder for file)
 
-3. Call the script with full path to the script: `python c:\scripts\create.py`
-
-⋅⋅⋅For verify_single, this will look like `python c:\scripts\verify_single.py c:\path\to\fake_file.txt.md5` will verify fake_file.txt.
+3. Call the script with full path to the script: `python c:\scripts\create.py`. For verify_single, this will look like `python c:\scripts\verify_single.py c:\path\to\fake_file.txt.md5` will verify fake_file.txt.
