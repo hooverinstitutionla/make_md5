@@ -11,6 +11,15 @@ import sys
 
 py_version = sys.version_info.major
 
+def make_full_file_list(dir1):
+    '''I find all the files in the directory and sub-folders.
+       I am not in create.py'''
+    file_list = []
+    for root, dirs, files in os.walk(dir1):
+        for f in files:
+            file_list.append(os.path.join(root, f))
+    return file_list
+
 def md5_for_file(f, block_size=2**20):
     '''This function, md5_for_file was copied from StackOverflow, used under the
     Creative Commons license outlined at:
@@ -30,13 +39,15 @@ def md5_for_file(f, block_size=2**20):
             m.update(buf)
     return m.hexdigest()
 
-def prep_for_writing(root, f):
-    new = os.path.join(root, f+'.md5')
-    if f == '.DS_Store': return None
+def prep_for_writing(f):
+    if not f:
+        return None
+    new = f+'.md5'
+    if '.DS_Store' in f: return None
     if os.path.isfile(new): return None
     elif '.md5.' in new: return None
     else:
-        write_md5_file(os.path.join(root, f), new)
+        write_md5_file(f, new)
 
 def write_md5_file(f, new):
     try:
@@ -69,10 +80,11 @@ def write_md5_file(f, new):
 
 def main():
     folder = os.getcwd()
+    full_files = make_full_file_list(folder)
     cores_count = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=cores_count)
-    for root, dirs, files in os.walk(folder):
-        [pool.apply_async(prep_for_writing(root, f)) for f in files]
+    for f in pool.imap_unordered(prep_for_writing, full_files):
+        prep_for_writing(f)
 
     print("\nDone!\n")
 

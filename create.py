@@ -12,18 +12,14 @@ import sys
 
 py_version = sys.version_info.major
 
-def cycle_files(this_dir):
-    cores_count = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(processes=cores_count)
-    [pool.apply_async(prep_for_writing(f)) for f in this_dir]
-
-def make_file_list(dir1):
+def make_file_list(folder):
     '''I find all the files in the directory and discard the sub-folders.
        I am not in create_tree.py'''
+    this_dir = os.listdir(folder)
     file_list = []
-    for f in dir1:
+    for f in this_dir:
         if not os.path.isdir('./'+f):
-            file_list.append(f)
+            file_list.append(os.path.join(folder, f))
     return file_list
 
 def md5_for_file(f, block_size=2**20):
@@ -46,8 +42,10 @@ def md5_for_file(f, block_size=2**20):
     return m.hexdigest()
 
 def prep_for_writing(f):
+    if not f:
+        return None
     new = f+'.md5'
-    if f == '.DS_Store': return None
+    if '.DS_Store' in f: return None
     if os.path.isfile(new): return None
     elif '.md5.' in new: return None
     else:
@@ -83,9 +81,12 @@ def write_md5_file(f, new):
             n.write(m+' *'+f)
 
 def main():
-    this_dir = os.listdir('.')
-    file_list = make_file_list(this_dir)
-    cycle_files(file_list)
+    folder = os.getcwd()
+    file_list = make_file_list(folder)
+    cores_count = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(processes=cores_count)
+    for f in pool.imap_unordered(prep_for_writing, file_list):
+        prep_for_writing(f)
     print("\nDone!\n")
 
 
