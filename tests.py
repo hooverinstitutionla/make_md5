@@ -42,11 +42,6 @@ def ffmpeg_there():
 
     return ffmpeg, bwfmetaedit
 
-ff, bwf = ffmpeg_there()
-if not ff or not bwf:
-    sys.exit('Please install FFMPEG and bwfmetaedit before you test these scripts.')
-
-
 def run_command(command):
     try:
         output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
@@ -56,6 +51,12 @@ def run_command(command):
         message = e
     return message
 
+# Preliminary tests
+ff, bwf = ffmpeg_there()
+if not ff or not bwf:
+    sys.exit('Please install FFMPEG and bwfmetaedit before you test these scripts.')
+
+py_version = sys.version_info.major
 
 class FunctionalTests(TestCase):
     md5_hash_for_90s_wav = 'a82ba680ec7dba3b5176dedbdf49a30d'
@@ -100,11 +101,18 @@ class FunctionalTests(TestCase):
         self.assertTrue(os.path.exists(hash_file))
 
         # The actual test
-        with open(hash_file, encoding='utf-8') as md5_file:
-            text = md5_file.read()
-            self.assertEqual(text[0], ';')
-            self.assertIn('delete_me_if_i_exist.wav', text)
-            self.assertIn(self.md5_hash_for_90s_wav, text)
+        if py_version == 3:
+            with open(hash_file, encoding='utf-8') as md5_file:
+                text = md5_file.read()
+                self.assertEqual(text[0], ';')
+                self.assertIn('delete_me_if_i_exist.wav', text)
+                self.assertIn(self.md5_hash_for_90s_wav, text)
+        else:
+            with open(hash_file) as md5_file:
+                text = md5_file.read()
+                self.assertEqual(text[0], ';')
+                self.assertIn('delete_me_if_i_exist.wav', text)
+                self.assertIn(self.md5_hash_for_90s_wav, text)
 
         # remove the test file md5
         os.remove(hash_file)
@@ -139,17 +147,30 @@ class FunctionalTests(TestCase):
         self.assertTrue(os.path.exists(hash_file))
 
         # The actual test
-        with open(hash_file, encoding='utf-8') as md5_file1:
-            text1 = md5_file1.read()
-            self.assertEqual(text1[0], ';')
-            self.assertIn('delete_me_if_i_exist.wav', text1)
-            self.assertIn(self.md5_hash_for_90s_wav, text1)
-        hash_file2 = os.path.join(self.test_files_dir, 'subfolder', 'test2.wav.md5')
-        with open(hash_file2, encoding='utf-8') as md5_file2:
-            text2 = md5_file2.read()
-            self.assertEqual(text2[0], ';')
-            self.assertIn('test2.wav', text2)
-            self.assertIn(self.md5_hash_for_90s_wav, text2)
+        if py_version == 3:
+            with open(hash_file, encoding='utf-8') as md5_file1:
+                text1 = md5_file1.read()
+                self.assertEqual(text1[0], ';')
+                self.assertIn('delete_me_if_i_exist.wav', text1)
+                self.assertIn(self.md5_hash_for_90s_wav, text1)
+            hash_file2 = os.path.join(self.test_files_dir, 'subfolder', 'test2.wav.md5')
+            with open(hash_file2, encoding='utf-8') as md5_file2:
+                text2 = md5_file2.read()
+                self.assertEqual(text2[0], ';')
+                self.assertIn('test2.wav', text2)
+                self.assertIn(self.md5_hash_for_90s_wav, text2)
+        else:
+            with open(hash_file) as md5_file1:
+                text1 = md5_file1.read()
+                self.assertEqual(text1[0], ';')
+                self.assertIn('delete_me_if_i_exist.wav', text1)
+                self.assertIn(self.md5_hash_for_90s_wav, text1)
+            hash_file2 = os.path.join(self.test_files_dir, 'subfolder', 'test2.wav.md5')
+            with open(hash_file2) as md5_file2:
+                text2 = md5_file2.read()
+                self.assertEqual(text2[0], ';')
+                self.assertIn('test2.wav', text2)
+                self.assertIn(self.md5_hash_for_90s_wav, text2)
 
         os.remove(os.path.join(sub_folder, 'test2.wav'))
         os.remove(os.path.join(sub_folder, 'test2.wav.md5'))
