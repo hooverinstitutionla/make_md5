@@ -1,7 +1,6 @@
 import os
 import subprocess
-import sys
-from time import sleep
+from sys import exit, version_info
 from unittest import main, TestCase
 
 def ffmpeg_there():
@@ -46,7 +45,7 @@ def run_command(command):
     try:
         output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         message = output.stdout.read()
-        output.stdout.close()
+        output.TerminateProcess()
     except Exception as e:
         message = e
     return message
@@ -54,9 +53,9 @@ def run_command(command):
 # Preliminary tests
 ff, bwf = ffmpeg_there()
 if not ff or not bwf:
-    sys.exit('Please install FFMPEG and bwfmetaedit before you test these scripts.')
+    exit('Please install FFMPEG and bwfmetaedit before you test these scripts.')
 
-py_version = sys.version_info.major
+py_version = version_info.major
 
 class FunctionalTests(TestCase):
     md5_hash_for_90s_wav = 'a82ba680ec7dba3b5176dedbdf49a30d'
@@ -91,7 +90,6 @@ class FunctionalTests(TestCase):
             print(e)
 
     def test_create(self):
-        print('\nTesting create now\n')
         # create the test md5 file
         os.chdir(self.test_files_dir)
         create_command = 'python {}'.format(os.path.join(self.main_directory, 'create.py'))
@@ -118,10 +116,8 @@ class FunctionalTests(TestCase):
         os.remove(hash_file)
         self.assertFalse(os.path.exists(hash_file))
         os.chdir(self.main_directory)
-        sleep(0.5)
 
     def test_create_tree(self):
-        print('\nTesting create_tree now\n')
         # create the sub folder
         sub_folder = os.path.join(self.test_files_dir, 'subfolder')
         if not os.path.exists(sub_folder):
@@ -178,6 +174,5 @@ class FunctionalTests(TestCase):
         self.assertFalse(os.path.exists(os.path.join(sub_folder, 'test2.wav.md5')))
         os.rmdir(sub_folder)
         os.remove(hash_file)
-        sleep(0.5)
 
 main()
