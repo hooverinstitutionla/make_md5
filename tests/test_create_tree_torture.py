@@ -77,44 +77,49 @@ class FunctionalTests(TestCase):
             print(e)
 
     def test_create_tree(self):
-        pass
-        # # run create_tree.py
-        # os.chdir(self.test_files_dir)
-        # create_command = 'python {}'.format(os.path.join(self.main_directory, 'create_tree.py'))
-        # command = create_command.split(' ')
-        # devnull = run_command(command)
-        # hash_file = self.test_file+'.md5'
-        # self.assertTrue(os.path.exists(hash_file))
-        #
-        # # The actual test
-        # if py_version == 3:
-        #     with open(hash_file, encoding='utf-8') as md5_file1:
-        #         text1 = md5_file1.read()
-        #         self.assertEqual(text1[0], ';')
-        #         self.assertIn('delete_me_if_i_exist.wav', text1)
-        #         self.assertIn(self.md5_hash_for_90s_wav, text1)
-        #     hash_file2 = os.path.join(self.test_files_dir, 'subfolder', 'test2.wav.md5')
-        #     with open(hash_file2, encoding='utf-8') as md5_file2:
-        #         text2 = md5_file2.read()
-        #         self.assertEqual(text2[0], ';')
-        #         self.assertIn('test2.wav', text2)
-        #         self.assertIn(self.md5_hash_for_90s_wav, text2)
-        # else:
-        #     with open(hash_file) as md5_file1:
-        #         text1 = md5_file1.read()
-        #         self.assertEqual(text1[0], ';')
-        #         self.assertIn('delete_me_if_i_exist.wav', text1)
-        #         self.assertIn(self.md5_hash_for_90s_wav, text1)
-        #     hash_file2 = os.path.join(self.test_files_dir, 'subfolder', 'test2.wav.md5')
-        #     with open(hash_file2) as md5_file2:
-        #         text2 = md5_file2.read()
-        #         self.assertEqual(text2[0], ';')
-        #         self.assertIn('test2.wav', text2)
-        #         self.assertIn(self.md5_hash_for_90s_wav, text2)
-        #
-        # os.remove(os.path.join(self.sub_folder, 'test2.wav.md5'))
-        # self.assertFalse(os.path.exists(os.path.join(self.sub_folder, 'test2.wav.md5')))
-        # os.remove(hash_file)
-        # os.chdir(self.main_directory)
+        # run create_tree.py
+        os.chdir(self.test_files_dir)
+        create_command = 'python {}'.format(os.path.join(self.main_directory, 'create_tree.py'))
+        command = create_command.split(' ')
+        devnull = run_command(command)
+        hash_file = self.test_file+'.md5'
+        self.assertTrue(os.path.exists(hash_file))
+
+        for i in range(100):
+            sub_folder = os.path.join(self.test_files_dir, 'subfolder%i' % i)
+            sub_test_file = os.path.join(sub_folder, 'test.wav')
+
+            # The actual test
+            if py_version == 3:
+                with open(hash_file, encoding='utf-8') as md5_file1:
+                    text1 = md5_file1.read()
+                    self.assertEqual(text1[0], ';')
+                    self.assertIn('delete_me_if_i_exist.wav', text1)
+                    self.assertIn(self.md5_hash_for_90s_wav, text1)
+                hash_file2 = os.path.join(sub_folder, 'test.wav.md5')
+                with open(hash_file2, encoding='utf-8') as md5_file2:
+                    text2 = md5_file2.read()
+                    self.assertEqual(text2[0], ';')
+                    self.assertIn('test.wav', text2)
+                    self.assertIn(self.md5_hash_for_90s_wav, text2)
+
+            else:
+                with open(hash_file) as md5_file1:
+                    text1 = md5_file1.read()
+                    self.assertEqual(text1[0], ';')
+                    self.assertIn('delete_me_if_i_exist.wav', text1)
+                    self.assertIn(self.md5_hash_for_90s_wav, text1)
+                hash_file2 = os.path.join(sub_folder, 'test.wav.md5')
+                with open(hash_file2) as md5_file2:
+                    text2 = md5_file2.read()
+                    self.assertEqual(text2[0], ';')
+                    self.assertIn('test.wav', text2)
+                    self.assertIn(self.md5_hash_for_90s_wav, text2)
+
+            # remove 100 test md5s
+            os.remove(os.path.join(sub_folder, 'test.wav.md5'))
+            self.assertFalse(os.path.exists(os.path.join(sub_folder, 'test.wav.md5')))
+        os.remove(hash_file)
+        os.chdir(self.main_directory)
 
 main()
